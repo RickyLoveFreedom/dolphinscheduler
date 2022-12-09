@@ -20,6 +20,7 @@ package org.apache.dolphinscheduler.plugin.task.seatunnel;
 import org.apache.dolphinscheduler.plugin.task.api.model.ResourceInfo;
 import org.apache.dolphinscheduler.plugin.task.api.parameters.AbstractParameters;
 import org.apache.dolphinscheduler.plugin.task.seatunnel.flink.SeatunnelFlinkParameters;
+import org.apache.dolphinscheduler.plugin.task.seatunnel.self.SeatunnelEngineTask;
 import org.apache.dolphinscheduler.plugin.task.seatunnel.spark.SeatunnelSparkParameters;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -34,8 +35,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, visible = true, property = "engine")
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = SeatunnelFlinkParameters.class, name = "FLINK"),
-    @JsonSubTypes.Type(value = SeatunnelSparkParameters.class, name = "SPARK")
+        @JsonSubTypes.Type(value = SeatunnelFlinkParameters.class, name = "FLINK"),
+        @JsonSubTypes.Type(value = SeatunnelFlinkParameters.class, name = "FLINK_V2"),
+        @JsonSubTypes.Type(value = SeatunnelSparkParameters.class, name = "SPARK"),
+        @JsonSubTypes.Type(value = SeatunnelSparkParameters.class, name = "SPARK_V2"),
+        @JsonSubTypes.Type(value = SeatunnelEngineTask.class, name = "SEATUNNEL_ENGINE"),
 })
 public class SeatunnelParameters extends AbstractParameters {
 
@@ -86,7 +90,8 @@ public class SeatunnelParameters extends AbstractParameters {
     public boolean checkParameters() {
         return Objects.nonNull(engine)
                 && ((BooleanUtils.isTrue(useCustom) && StringUtils.isNotBlank(rawScript))
-                || (BooleanUtils.isFalse(useCustom) && CollectionUtils.isNotEmpty(resourceList) && resourceList.size() == 1));
+                        || (BooleanUtils.isFalse(useCustom) && CollectionUtils.isNotEmpty(resourceList)
+                                && resourceList.size() == 1));
     }
 
     @Override
