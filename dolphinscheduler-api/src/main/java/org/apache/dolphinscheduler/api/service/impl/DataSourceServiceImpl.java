@@ -529,7 +529,8 @@ public class DataSourceServiceImpl extends BaseServiceImpl implements DataSource
             tableList = new ArrayList<>();
             while (tables.next()) {
                 String name = tables.getString(TABLE_NAME);
-                tableList.add(name);
+                String childSchema = tables.getString("TABLE_SCHEM");
+                tableList.add(childSchema+"."+name);
             }
 
         } catch (Exception e) {
